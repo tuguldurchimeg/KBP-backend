@@ -1,6 +1,6 @@
 require 'digest'
 
-class JsonWebTokens
+class JsonWebToken
   SECRET_KEY = ENV['SECRET_KEY_BASE'].to_s
   REFRESH_TOKEN_SECRET_KEY = ENV['REFRESH_TOKEN_SECRET_KEY_BASE'].to_s
 

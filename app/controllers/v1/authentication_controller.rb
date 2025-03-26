@@ -1,0 +1,138 @@
+class V1::AuthenticationController < ApplicationController
+  before_action :authorize_request, only: %i[logout password_change]
+
+  def social_login
+    user_data = SocialAuthentication.google_authentication(params[:access_token])
+    if user_data.nil? || !user_data[:email].present?
+      return render json: { error: 'Google login failed' },
+                    status: :unauthorized
+    end
+
+    user = User.find_by!(email: user_data[:email])
+    # return render json: { error: 'Google login failed' }, status: :unauthorized if user.nil?
+    user.update_login_count(user_data[:id].to_s) if user.provider_id?
+    render json: JsonWebToken.get_tokens({ email: user.email }).to_json, status: :ok
+  end
+
+  def login
+    if params[:email].nil? || params[:password].nil?
+      return render json: { error: 'Missing params' },
+                    status: :unauthorized
+    end
+
+    user = User.authenticated_user(params)
+    if user
+      render json: JsonWebToken.get_tokens({ email: user.email }).to_json, status: :ok
+    else
+      render json: { error: 'Unregistered email address' }, status: :unauthorized
+    end
+  end
+
+  def forgot_password
+    user = User.confirmation_code_sent(params)
+    if user
+      PasswordMailer.with(
+        user: user
+      ).send_confirmation_code.deliver_now
+      render json: { success: 'Success' }, status: :ok
+    else
+      render json: { error: 'Unregistered email address' }, status: :unprocessable_entity
+    end
+  end
+
+  def confirm_reset
+    user = User.find_by_email(params[:email]&.downcase)
+    return render json: { error: 'Unregistered email address' }, status: :unprocessable_entity unless user.present?
+
+    unless user.password_code_valid?
+      return render json: { error: 'Confirmation code expired' },
+                    status: :unprocessable_entity
+    end
+
+    if params[:confirmation_code].to_i.eql? user.confirmation_code
+      render json: { success: 'Confirmed' }, status: :ok
+    else
+      render json: { error: 'Confirmation code not match' }, status: :unprocessable_entity
+    end
+  end
+
+  def save
+    @user = User.find_by_email(params[:email].downcase)
+    return render json: { error: 'Unregistered email address' }, status: :unauthorized unless @user.present?
+    return render json: { error: 'Confirmation code expired' }, status: :unauthorized unless @user.password_code_valid?
+    unless params[:confirmation_code].to_i.eql? @user.confirmation_code
+      return render json: { error: 'Confirmation code not match' }, status: :unauthorized
+    end
+
+    if params[:password] == params[:password_confirm]
+      if @user.authenticate(params[:password])
+        return render json: {code: 40044, message: I18n.t('errors.messages.used_before') }, status: :unauthorized
+      end
+
+      begin
+        @user.reset_password!(params[:password])
+        # UserMailer.reset_password_complete(@user).deliver_now!
+        render json: { success: 'password has been reset successfully' }, status: :ok
+      rescue ActiveRecord::RecordInvalid => e
+        render json: { error: e.message }, status: :unprocessable_entity
+      end
+    else
+      render json: { error: 'Password confirm not match' }, status: :unprocessable_entity
+    end
+  end
+
+  def refresh_token
+    decoded = JsonWebToken.decode_refresh_token(params[:refresh_token]&.strip)
+    user = User.find_by(email: decoded[:email])
+    if decoded[:token_at].present?
+      jwt_blacklist = JwtBlacklist.where(user_id: user.id, token_at: decoded[:token_at]).last
+      return render json: { error: 'Invalid token' }, status: :unauthorized if jwt_blacklist.present?
+    end
+    user.increment!(:login_count) if user.login_count <= 1
+    render json: JsonWebToken.get_tokens({ email: user.email }).to_json, status: :ok
+  rescue JWT::ExpiredSignature=>e
+    render json: { error: 'Token expired' }, status: :unauthorized
+  rescue JWT::DecodeError, ActiveRecord::RecordNotFound
+    render json: { error: 'Invalid token' }, status: :unauthorized
+  end
+
+  def logout
+    header = request.headers['authorization']
+    if header.present?
+      header = header.split(' ').last
+      @decoded = JsonWebToken.decode(header)
+      JwtBlacklist.add(@current_user.id, header, @decoded)
+    end
+    render json: { status: 'ok' }, status: :ok
+  end
+
+  def password_change
+    if @current_user&.password_digest.present? && @current_user.authenticate(params[:current_password])
+      if params[:new_password] == params[:confirm_new_password]
+        if @current_user.authenticate(params[:new_password])
+          return render json: {code: 40044, message: I18n.t('errors.messages.used_before') }, status: :unauthorized
+        end
+
+        if @current_user.update!(password: params[:new_password], password_change_required: false)
+          render json: { success: 'Password successfully changed' }, status: :ok
+        end
+      else
+        render json: { code: 40034, message: I18n.t(:confirm_mismatch) }, status: :unprocessable_entity
+      end
+    else
+      render json: { code: 40035, message: I18n.t(:incorrect) }, status: :unprocessable_entity
+    end
+  end
+
+  def resend_code
+    user = User.find_by_email(params[:email].downcase)
+    if user
+      PasswordMailer.with(
+        user: user
+      ).send_confirmation_code.deliver_now
+      render json: { success: 'Success' }, status: :ok
+    else
+      render json: { error: 'Unregistered email address' }, status: :unprocessable_entity
+    end
+  end
+end

@@ -239,6 +239,8 @@ GEM
     public_suffix (6.0.1)
     puma (5.6.9)
       nio4r (~> 2.0)
+    pundit (2.3.1)
+      activesupport (>= 3.0.0)
     racc (1.8.1)
     rack (2.2.13)
     rack-cors (2.0.1)
@@ -403,6 +405,7 @@ DEPENDENCIES
   omniauth-rails_csrf_protection (~> 1.0)
   overcommit
   puma (~> 5.0)
+  pundit
   rack-cors
   rails (~> 7.0.5)
   rails_best_practices
