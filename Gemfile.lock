@@ -69,6 +69,47 @@ GEM
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
     ast (2.4.2)
+    aws-eventstream (1.2.0)
+    aws-partitions (1.843.0)
+    aws-record (2.13.0)
+      aws-sdk-dynamodb (~> 1, >= 1.85.0)
+    aws-sdk-core (3.185.2)
+      aws-eventstream (~> 1, >= 1.0.2)
+      aws-partitions (~> 1, >= 1.651.0)
+      aws-sigv4 (~> 1.5)
+      jmespath (~> 1, >= 1.6.1)
+    aws-sdk-dynamodb (1.96.0)
+      aws-sdk-core (~> 3, >= 3.184.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-kms (1.72.0)
+      aws-sdk-core (~> 3, >= 3.184.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-rails (3.9.0)
+      aws-record (~> 2)
+      aws-sdk-ses (~> 1, >= 1.50.0)
+      aws-sdk-sesv2 (~> 1, >= 1.34.0)
+      aws-sdk-sqs (~> 1, >= 1.56.0)
+      aws-sessionstore-dynamodb (~> 2)
+      concurrent-ruby (~> 1)
+      railties (>= 5.2.0)
+    aws-sdk-s3 (1.136.0)
+      aws-sdk-core (~> 3, >= 3.181.0)
+      aws-sdk-kms (~> 1)
+      aws-sigv4 (~> 1.6)
+    aws-sdk-ses (1.56.0)
+      aws-sdk-core (~> 3, >= 3.184.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-sesv2 (1.41.0)
+      aws-sdk-core (~> 3, >= 3.184.0)
+      aws-sigv4 (~> 1.1)
+    aws-sdk-sqs (1.67.0)
+      aws-sdk-core (~> 3, >= 3.184.0)
+      aws-sigv4 (~> 1.1)
+    aws-sessionstore-dynamodb (2.1.0)
+      aws-sdk-dynamodb (~> 1, >= 1.85.0)
+      rack (~> 2)
+    aws-sigv4 (1.6.1)
+      aws-eventstream (~> 1, >= 1.0.2)
     base64 (0.2.0)
     bcrypt (3.1.18)
     bootsnap (1.18.4)
@@ -137,6 +178,7 @@ GEM
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
+    jmespath (1.6.2)
     json (2.6.3)
     json-schema (3.0.0)
       addressable (>= 2.8)
@@ -239,8 +281,6 @@ GEM
     public_suffix (6.0.1)
     puma (5.6.9)
       nio4r (~> 2.0)
-    pundit (2.3.1)
-      activesupport (>= 3.0.0)
     racc (1.8.1)
     rack (2.2.13)
     rack-cors (2.0.1)
@@ -386,6 +426,8 @@ PLATFORMS
   x86_64-linux-musl
 
 DEPENDENCIES
+  aws-sdk-rails
+  aws-sdk-s3
   bcrypt (~> 3.1.7)
   bootsnap
   brakeman
@@ -405,7 +447,6 @@ DEPENDENCIES
   omniauth-rails_csrf_protection (~> 1.0)
   overcommit
   puma (~> 5.0)
-  pundit
   rack-cors
   rails (~> 7.0.5)
   rails_best_practices

@@ -3,6 +3,12 @@ Rails.application.routes.draw do
   mount Rswag::Api::Engine => '/api-docs'
   root to: 'application#welcome'
   namespace :v1 do
+    resources :s3 do
+      collection do
+        post :presigned_url
+      end
+    end
+
     get 'profile', to: 'authentication#show'
     post 'login', to: 'authentication#login'
     post 'google_login', to: 'authentication#social_login'
@@ -14,11 +20,6 @@ Rails.application.routes.draw do
     post 'logout', to: 'authentication#logout'
     post 'refresh_token', to: 'authentication#refresh_token'
     get 'app_init', to: 'main#app_init'
-    resources :s3 do
-      collection do
-        post :presigned_url
-      end
-    end
     resources :users do
 
     end

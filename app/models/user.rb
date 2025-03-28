@@ -1,8 +1,8 @@
 class User < ApplicationRecord
   has_secure_password
   has_many :jwt_blacklists
-  belongs_to :company
-  belongs_to :role
+  belongs_to :company, foreign_key: :company_id
+  belongs_to :role, foreign_key: :role_id
   has_many :workspaces
   has_many :documents, foreign_key: :author_id
   has_many :issues, foreign_key: :created_by_id

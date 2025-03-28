@@ -10,7 +10,7 @@ class V1::UsersController < ApplicationController
 
   # GET /users/1
   def show
-    render json: UserSerializer.new(@user)
+    render json: V1::UserSerializer.new(@user)
   end
 
   # POST /users
@@ -18,7 +18,8 @@ class V1::UsersController < ApplicationController
     @user = User.new(user_params)
     @user.uid = SecureRandom.uuid
     if @user.save
-      render json: UserSerializer.new(@user)
+      # render json: V1::UserSerializer.new(@user)
+      render json: @user
     else
       render json: @user.errors, status: :unprocessable_entity
     end
@@ -31,7 +32,7 @@ class V1::UsersController < ApplicationController
   end
 
   def user_params
-    params.permit(:email, :firstname, :lastname, :status, :avatar, :role_id, :password)
+    params.permit(:email, :firstname, :lastname, :status, :avatar, :company_id, :role_id, :password)
   end
 
 end

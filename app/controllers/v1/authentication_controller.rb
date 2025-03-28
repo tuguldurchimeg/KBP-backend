@@ -1,5 +1,5 @@
 class V1::AuthenticationController < ApplicationController
-  before_action :authorize_request, only: %i[logout password_change]
+  before_action :authorize_request, only: %i[logout password_change show]
 
   def social_login
     user_data = SocialAuthentication.google_authentication(params[:access_token])
@@ -26,6 +26,11 @@ class V1::AuthenticationController < ApplicationController
     else
       render json: { error: 'Unregistered email address' }, status: :unauthorized
     end
+  end
+
+  def show
+    # render json: V1::UserSerializer.new(@user)
+    render json: @current_user
   end
 
   def forgot_password
