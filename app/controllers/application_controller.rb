@@ -2,13 +2,12 @@ class ApplicationController < ActionController::API
   # include ErrorHandler
   # include Pundit::Authorization
   def authorize_request
-    puts 'checkhereee'
     auth_header = request.headers['authorization']
     @timezone = request.headers['Time-Zone'].present? ? request.headers['Time-Zone'] : UTC_TIMEZONE
     token = auth_header.split(' ').last
     @decoded = JsonWebToken.decode(token)
     puts "decodedd: #{@decoded}"
-    @current_user = User.find_by(email: @decoded[:email])
+    @current_user = Base::User.find_by(email: @decoded[:email])
   rescue JWT::ExpiredSignature
     render json: { error: 'Token expired' }, status: :unauthorized
   rescue JWT::DecodeError, ActiveRecord::RecordNotFound

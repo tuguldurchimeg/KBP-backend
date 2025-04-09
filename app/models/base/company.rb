@@ -1,4 +1,4 @@
-class Company < ApplicationRecord
+class Base::Company < ApplicationRecord
   has_many :users
   has_many :workspaces
 

@@ -14,8 +14,7 @@ class V1::S3Controller < ApplicationController
     return respond('Missing parameter content_type', :unprocessable_entity) unless content_type.present?
     return respond('Missing parameter mime_type', :unprocessable_entity) unless mime_type.present?
 
-    system_setting = Base::MstSystemSetting.find_by(name: 'company_prefix')
-    bucket_folder = system_setting&.value.to_s
+    bucket_folder = ''
 
     case content_type
     when AVATAR
@@ -26,8 +25,8 @@ class V1::S3Controller < ApplicationController
       document_id = params[:document_id]
       return respond('Missing parameter document_id', :unprocessable_entity) unless document_id.present?
 
-      # jishee: documents/456/files/user_23/filename
-      bucket_folder += "/documents/#{document_id}/files/user_#{@current_user.id}"
+      # jishee: documents/456/filename
+      bucket_folder += "/documents/#{document_id}"
 
     when FILES
       bucket_folder += "/files/user_#{@current_user.id}/#{Time.now.strftime('%Y/%m')}"
@@ -45,6 +44,7 @@ class V1::S3Controller < ApplicationController
   private
 
   def create_presigned_url(key, mime_type, acl = 'public-read')
+    # key - bucket_folder/object_id/filename
     s3 = Aws::S3::Resource.new
     bucket = s3.bucket(ENV['S3_BUCKET_NAME'])
     obj = bucket.object(key)

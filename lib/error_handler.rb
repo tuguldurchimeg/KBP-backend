@@ -15,7 +15,6 @@ module ErrorHandler
       rescue_from ActiveRecord::RecordNotUnique, with: :respond_duplicate_entry
       rescue_from Pundit::NotAuthorizedError, with: :respond_access_denied
       rescue_from ArgumentError, with: :render_argument_error
-      rescue_from SyncUser::AuthValidationError, with: :render_auth_validation_error
     end
   end
 

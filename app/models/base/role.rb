@@ -1,4 +1,5 @@
-class Module < ApplicationRecord
+class Base::Role < ApplicationRecord
+  has_many :users
   has_many :role_details
 
   validates :name, presence: true

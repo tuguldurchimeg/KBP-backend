@@ -1,4 +1,4 @@
-class RoleDetail < ApplicationRecord
+class Base::RoleDetail < ApplicationRecord
   belongs_to :role
   belongs_to :module
 

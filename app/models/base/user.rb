@@ -1,4 +1,4 @@
-class User < ApplicationRecord
+class Base::User < ApplicationRecord
   has_secure_password
   has_many :jwt_blacklists
   belongs_to :company, foreign_key: :company_id
