@@ -32,5 +32,12 @@ Rails.application.routes.draw do
       resources :issues
       resources :issue_comments
     end
+
+    namespace :tools do
+      resources :categories
+      resources :tags
+      resources :glossaries
+      resources :seos
+    end
   end
 end

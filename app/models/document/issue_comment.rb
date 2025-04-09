@@ -1,4 +1,4 @@
-class IssueComment < ApplicationRecord
+class Document::IssueComment < ApplicationRecord
   belongs_to :issue
   belongs_to :user
 
