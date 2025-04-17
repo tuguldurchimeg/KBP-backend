@@ -12,7 +12,7 @@ class V1::CompaniesController < ApplicationController
   end
 
   def create
-    @company = Company.new(company_params)
+    @company = Company.new(company_params.merge(uid: SecureRandom.uuid))
     if @company.save
       render json: @company, status: :created
     else

@@ -3,6 +3,7 @@ class CreateRoles < ActiveRecord::Migration[7.0]
     create_table :roles do |t|
       t.string :name
       t.text :description
+      t.bigint :company_id
 
       t.timestamps
     end

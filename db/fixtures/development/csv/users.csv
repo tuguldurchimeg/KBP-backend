@@ -1,2 +1,11 @@
-id,uid,email,firstname,lastname,password_digest,role_id
-1,abc123,tgldrchmg0730@gmail.com,John,Doe,Test@123,1
+id,uid,email,firstname,lastname,password_digest,role_id,
+1,abc123,tgldrchmg0730@gmail.com,Tuugu,Dorj,Test@123,1,
+2,bvv221,bat.erdene@example.mn,Bat,Erdene,Test@102,2,
+3,cdd332,ochir.bayaraa@example.mn,Ochir,Bayaraa,Test@103,2,
+4,dff443,solongo.tsatsral@example.mn,Solongo,Tsatsral,Test@104,2,
+5,egg554,erdene.sarangerel@example.mn,Erdene,Sarangerel,Test@105,1,
+6,fhh665,namuun.bolormaa@example.mn,Namuun,Bolormaa,Test@106,2,
+7,gjj776,tamir.tsogtbaatar@example.mn,Tamir,Tsogtbaatar,Test@107,1,
+8,hhh887,sarnai.altantuya@example.mn,Sarnai,Altantuya,Test@108,2,
+9,ikk998,bilegt.enkhbayar@example.mn,Bilegt,Enkhbayar,Test@109,1,
+10,jll109,aariimaa.naranbold@example.mn,Aariimaa,Naranbold,Test@110,2,

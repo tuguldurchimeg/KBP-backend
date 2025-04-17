@@ -4,4 +4,5 @@ class Base::RoleDetail < ApplicationRecord
 
   validates :role_id, presence: true
   validates :module_id, presence: true
+  enum :action, { admin: 99, read: 1, write: 2}
 end

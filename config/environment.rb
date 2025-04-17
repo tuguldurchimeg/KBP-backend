@@ -3,6 +3,8 @@ require_relative 'application'
 
 # Initialize the Rails application.
 Rails.application.initialize!
+DOCUMENT='documents'
+TOOL='tools'
 DEFAULT_PASSWORD = 'Test@123'
 ORDER_OPTIONS = %w[asc desc]
 UTC_TIMEZONE = 'Etc/UTC'

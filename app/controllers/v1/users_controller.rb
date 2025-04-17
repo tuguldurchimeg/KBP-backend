@@ -15,8 +15,7 @@ class V1::UsersController < ApplicationController
     @user = Base::User.new(user_params)
     @user.uid = SecureRandom.uuid
     if @user.save
-      # render json: V1::UserSerializer.new(@user)
-      render json: @user
+      render json: V1::UserSerializer.new(@user)
     else
       render json: @user.errors, status: :unprocessable_entity
     end

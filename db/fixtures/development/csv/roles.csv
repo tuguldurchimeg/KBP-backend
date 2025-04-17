@@ -1,2 +1,3 @@
-id, name, description
-1, superadmin, superadmin
+id,name,description,company_id
+1,superadmin,superadmin,1,
+2,employee,employee,1,

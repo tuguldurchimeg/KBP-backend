@@ -50,4 +50,20 @@ class Base::User < ApplicationRecord
     end
     user
   end
+
+  def has_permission?(action, resource)
+    return false if role_id.nil?
+
+    role = Base::Role.find(role_id)
+    m = Base::Module.find_by('name ILIKE :keyword', keyword: "#{resource.strip}")
+    return false if m.nil?
+    role_details = role.role_details.find_by(module_id: m.id)
+    if role_details&.write? || role_details&.admin?
+      true
+    elsif role_details&.read? && action == Base::RoleDetail.actions[:read]
+      true
+    else
+      false
+    end
+  end
 end
