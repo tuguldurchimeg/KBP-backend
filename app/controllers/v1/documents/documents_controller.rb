@@ -46,6 +46,6 @@ class V1::Documents::DocumentsController < ApplicationController
   end
 
   def document_params
-    params.require(:document).permit(:title, :content, :is_template, :category_id)
+    params.permit(:title, :content, :is_template, :category_id)
   end
 end

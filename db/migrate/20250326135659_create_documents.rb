@@ -5,6 +5,7 @@ class CreateDocuments < ActiveRecord::Migration[7.0]
       t.bigint :category_id, index: true # FK
       t.bigint :user_id, index: true # FK (author)
       t.jsonb :content, default: {}, null: false
+      t.boolean :is_template, default: false
 
       t.timestamps
     end

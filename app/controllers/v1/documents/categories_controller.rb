@@ -4,17 +4,17 @@ class V1::Documents::CategoriesController < ApplicationController
 
 	def index
 		@categories = Document::Category.where(workspace_id: params[:workspace_id])
-		render json: @categories
+		render json: V1::CategorySerializer.new(@categories)
 	end
 
 	def show
-		render json: @category
+		render json: V1::CategorySerializer.new(@category)
 	end
 
 	def create
 		@category = Document::Category.new(category_params)
 		if @category.save
-			render json: @category, status: :created
+			render json: V1::CategorySerializer.new(@category), status: :created
 		else
 			render json: @category.errors, status: :unprocessable_entity
 		end
@@ -22,7 +22,7 @@ class V1::Documents::CategoriesController < ApplicationController
 
 	def update
 		if @category.update(category_params)
-			render json: @category
+			render json: V1::CategorySerializer.new(@category)
 		else
 			render json: @category.errors, status: :unprocessable_entity
 		end
