@@ -1,4 +1,4 @@
-class Base::Category < ApplicationRecord
+class Document::Category < ApplicationRecord
   belongs_to :workspace, foreign_key: :workspace_id, class_name: 'Base::Workspace'
   has_many :documents
 

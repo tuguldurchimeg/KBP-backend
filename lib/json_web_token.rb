@@ -32,7 +32,7 @@ class JsonWebToken
       uid: user.uid,
       email: user.email,
       access_token: JsonWebToken.encode(payload, 1.hour.from_now),
-      refresh_token: JsonWebToken.encode_refresh_token(payload, 1.day.from_now),
+      refresh_token: JsonWebToken.encode_refresh_token(payload, 14.day.from_now),
       sign_in_count: user.login_count,
       password_change_required: user.password_change_required
     }

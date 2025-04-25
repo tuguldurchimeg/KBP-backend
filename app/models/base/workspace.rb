@@ -7,7 +7,6 @@ class Base::Workspace < ApplicationRecord
   has_many :glossaries, dependent: :destroy, class_name: 'Tool::Glossary'
   has_many :seos, dependent: :destroy, class_name: 'Tool::Seo'
 
-  validates :company_id, presence: true
   validates :name, presence: true, uniqueness: true
   validates :creator_id, presence: true
 

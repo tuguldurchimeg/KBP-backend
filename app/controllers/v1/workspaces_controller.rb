@@ -12,7 +12,7 @@ class V1::WorkspacesController < ApplicationController
   end
 
   def create
-    @workspace = Base::Workspace.new(workspace_params.merge(creator_id: @current_user.id))
+    @workspace = Base::Workspace.new(workspace_params.merge(creator_id: @current_user.id, company_id: 1))
     if @workspace.save
       render json: @workspace, status: :created
     else

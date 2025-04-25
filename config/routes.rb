@@ -26,10 +26,10 @@ Rails.application.routes.draw do
         post :assign, on: :collection
       end
       resources :issue_comments
+      resources :categories
     end
 
     namespace :tools do
-      resources :categories
       resources :tags
       resources :glossaries
       resources :seos

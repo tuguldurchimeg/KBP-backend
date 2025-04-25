@@ -3,7 +3,7 @@ class V1::Documents::CategoriesController < ApplicationController
 	before_action :set_category, only: %i[show update destroy]
 
 	def index
-		@categories = Document::Category.all
+		@categories = Document::Category.where(workspace_id: params[:workspace_id])
 		render json: @categories
 	end
 
@@ -42,6 +42,6 @@ class V1::Documents::CategoriesController < ApplicationController
 	end
 
 	def category_params
-		params.require(:category).permit(:name, :description)
+		params..require(:category).permit(:name, :description, :workspace_id)
 	end
 end
