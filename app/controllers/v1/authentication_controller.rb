@@ -29,7 +29,7 @@ class V1::AuthenticationController < ApplicationController
   end
 
   def show
-    # render json: V1::UserSerializer.new(@user)
+    render json: V1::UserSerializer.new(@user)
     render json: @current_user
   end
 

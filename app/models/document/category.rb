@@ -3,5 +3,4 @@ class Base::Category < ApplicationRecord
   has_many :documents
 
   validates :name, presence: true
-  validates :type, presence: true
 end

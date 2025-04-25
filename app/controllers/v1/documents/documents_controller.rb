@@ -3,18 +3,22 @@ class V1::Documents::DocumentsController < ApplicationController
   before_action :set_document, only: %i[show update destroy]
 
   def index
-    @documents = Document::Document.all
-    render json: @documents
+    if params[:is_template].present? && params[:is_template]
+      @documents = Document::Document.where(is_template: true)
+    else
+      @documents = Document::Document.where(is_template: false)
+    end
+    render json: V1::DocumentSerializer.new(@documents, params: { show_details: true })
   end
 
   def show
-    render json: @document
+    render json: V1::DocumentSerializer.new(@document, params: { show_details: true })
   end
 
   def create
     @document = Document::Document.new(document_params)
     if @document.save
-      render json: @document, status: :created
+      render json: V1::DocumentSerializer.new(@document), status: :created
     else
       render json: @document.errors, status: :unprocessable_entity
     end
@@ -22,7 +26,7 @@ class V1::Documents::DocumentsController < ApplicationController
 
   def update
     if @document.update(document_params)
-      render json: @document
+      render json: V1::DocumentSerializer.new(@document)
     else
       render json: @document.errors, status: :unprocessable_entity
     end
@@ -42,6 +46,6 @@ class V1::Documents::DocumentsController < ApplicationController
   end
 
   def document_params
-    params.require(:document).permit(:title, :content, :author_id)
+    params.require(:document).permit(:title, :content, :is_template, :category_id)
   end
 end

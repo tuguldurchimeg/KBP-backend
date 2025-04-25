@@ -4,17 +4,17 @@ class V1::Tools::TagsController < ApplicationController
 
   def index
     @tags = Tool::Tag.all
-    render json: @tags
+    render json: V1::TagSerializer.new(@tags)
   end
 
   def show
-    render json: @tag
+    render json: V1::TagSerializer.new(@tag)
   end
 
   def create
     @tag = Tool::Tag.new(tag_params)
     if @tag.save
-      render json: @tag, status: :created
+      render json: V1::TagSerializer.new(@tag), status: :created
     else
       render json: @tag.errors, status: :unprocessable_entity
     end
@@ -22,7 +22,7 @@ class V1::Tools::TagsController < ApplicationController
 
   def update
     if @tag.update(tag_params)
-      render json: @tag
+      render json: V1::TagSerializer.new(@tag)
     else
       render json: @tag.errors, status: :unprocessable_entity
     end
@@ -42,6 +42,6 @@ class V1::Tools::TagsController < ApplicationController
   end
 
   def tag_params
-    params.require(:tag).permit(:name, :description)
+    params.require(:tag).permit(:name, :description, :color)
   end
 end
