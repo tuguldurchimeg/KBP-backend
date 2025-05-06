@@ -4,4 +4,7 @@ class V1::WorkspaceSerializer
   attribute :company do |object|
     V1::CompanySerializer.new(object.company)
   end
+  attribute :categories do |object|
+    V1::CategorySerializer.new(object.categories)
+  end
 end

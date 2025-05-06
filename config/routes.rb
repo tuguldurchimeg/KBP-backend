@@ -8,7 +8,9 @@ Rails.application.routes.draw do
     resources :roles
 
     namespace :documents do
-      resources :documents
+      resources :documents do
+        get :quick_access, on: :collection
+      end
       resources :issues do
         post :assign, on: :collection
       end

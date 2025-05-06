@@ -1,12 +1,12 @@
 class Base::User < ApplicationRecord
   has_secure_password
   has_many :jwt_blacklists
-  belongs_to :company, foreign_key: :company_id
-  belongs_to :role, foreign_key: :role_id
-  has_many :workspaces
-  has_many :documents, foreign_key: :author_id
-  has_many :issues, foreign_key: :created_by_id
-  has_many :issue_comments
+  belongs_to :company, foreign_key: :company_id, class_name: 'Base::Company'
+  belongs_to :role, foreign_key: :role_id, class_name: 'Base::Role'
+  has_many :workspaces, class_name: 'Base::Workspace'
+  has_many :documents, class_name: 'Document::Document'
+  has_many :issues, class_name: 'Document::Issue'
+  has_many :issue_comments, class_name: 'Document::IssueComment'
 
   validates :uid, uniqueness: { case_sensitive: false }, length: { maximum: 50 }
   validates :firstname, presence: true, length: { in: 1..50 }

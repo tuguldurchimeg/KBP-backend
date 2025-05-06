@@ -37,6 +37,11 @@ class V1::Documents::DocumentsController < ApplicationController
     head :no_content
   end
 
+  def quick_access
+    @documents = Document::Document.where(is_template: false).order(view_count: :asc)
+    render json: V1::DocumentSerializer.new(@documents)
+  end
+
   private
 
   def set_document

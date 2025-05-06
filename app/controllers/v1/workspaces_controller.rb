@@ -4,17 +4,17 @@ class V1::WorkspacesController < ApplicationController
 
   def index
     @workspaces = Base::Workspace.all
-    render json: @workspaces
+    render json: V1::WorkspaceSerializer.new(@workspaces)
   end
 
   def show
-    render json: @workspace
+    render json: V1::WorkspaceSerializer.new(@workspace)
   end
 
   def create
     @workspace = Base::Workspace.new(workspace_params.merge(creator_id: @current_user.id, company_id: 1))
     if @workspace.save
-      render json: @workspace, status: :created
+      render json: V1::WorkspaceSerializer.new(@workspace), status: :created
     else
       render json: @workspace.errors, status: :unprocessable_entity
     end
@@ -22,7 +22,7 @@ class V1::WorkspacesController < ApplicationController
 
   def update
     if @workspace.update(workspace_params)
-      render json: @workspace
+      render json: V1::WorkspaceSerializer.new(@workspace)
     else
       render json: @workspace.errors, status: :unprocessable_entity
     end

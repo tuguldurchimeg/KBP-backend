@@ -14,11 +14,14 @@ class V1::DocumentSerializer
     V1::TagSerializer.new(tags)
   end
 
-  attribute :user, if: show_detail do |object|
+  attribute :user do |object|
     V1::UserSerializer.new(object.user)
   end
 
   attribute :category, if: show_detail do |object|
     V1::CategorySerializer.new(object.category)
+  end
+  attribute :workspace_id do |object|
+    object.category.workspace_id
   end
 end
