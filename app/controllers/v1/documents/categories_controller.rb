@@ -42,6 +42,6 @@ class V1::Documents::CategoriesController < ApplicationController
 	end
 
 	def category_params
-		params..require(:category).permit(:name, :description, :workspace_id)
+		params.permit(:name, :description, :workspace_id)
 	end
 end
