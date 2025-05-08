@@ -4,6 +4,7 @@ class CreateTags < ActiveRecord::Migration[7.0]
       t.string :name
       t.text :description
       t.bigint :workspace_id, index: true # FK
+      t.string :color
 
       t.timestamps
     end
