@@ -13,6 +13,7 @@ Rails.application.routes.draw do
       end
       resources :issues do
         post :assign, on: :collection
+        get :report, on: :collection
       end
       resources :issue_comments
       resources :categories

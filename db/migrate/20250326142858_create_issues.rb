@@ -4,6 +4,7 @@ class CreateIssues < ActiveRecord::Migration[7.0]
       t.string :title
       t.integer :status
       t.integer :priority
+      t.integer :issue_type
       t.string :description
       t.bigint :created_by, index: true # FK
       t.bigint :workspace_id, index: true # FK

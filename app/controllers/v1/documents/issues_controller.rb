@@ -8,7 +8,7 @@ class V1::Documents::IssuesController < ApplicationController
   end
 
   def show
-    render json: V1::IssueSerializer.new(@issue)
+    render json: V1::IssueSerializer.new(@issue, params: {show_detail: true})
   end
 
   def create
@@ -24,7 +24,7 @@ class V1::Documents::IssuesController < ApplicationController
     if @issue.update(issue_params)
       render json: V1::IssueSerializer.new(@issue)
     else
-      render json: issue.errors, status: :unprocessable_entity
+      render json: @issue.errors, status: :unprocessable_entity
     end
   end
 
@@ -33,12 +33,41 @@ class V1::Documents::IssuesController < ApplicationController
     head :no_content
   end
 
+  def report
+      issues = Document::Issue.where(workspace_id: params[:workspace_id])
+      by_status = issues.group(:status).count.map do |status, count|
+        { status: status, count: count }
+      end
+
+      by_priority = issues.group(:priority).count.map do |priority, count|
+        { priority: priority, count: count }
+      end
+
+      by_type = issues.group(:issue_type).count.map do |issue_type, count|
+        { type: issue_type, count: count }
+      end
+
+      by_issue_assignee = issues.joins(:issue_assignees)
+                                 .group('issue_assignees.user_id')
+                                 .count.map do |user_id, count|
+        user = Base::User.find_by(id: user_id)
+        { user: V1::UserSerializer.new(user), count: count }
+      end
+
+      render json: {
+        by_status: by_status,
+        by_priority: by_priority,
+        by_type: by_type,
+        by_issue_assignee: by_issue_assignee
+      }
+  end
+
   def assign
     @issueAssignee = Document::IssueAssignee.new(user_id: params[:user_id], issue_id: params[:issue_id])
     if @issueAssignee.save
-      render json: { message: 'Document successfully assigned to issue.' }, status: :ok
+      render json: V1::IssueAssigneeSerializer.new(@issueAssignee), status: :ok
     else
-      render json: { error: 'Failed to assign document to issue.' }, status: :unprocessable_entity
+      render json: @issueAssignee.errors, status: :unprocessable_entity
     end
   end
 
@@ -49,6 +78,6 @@ class V1::Documents::IssuesController < ApplicationController
   end
 
   def issue_params
-    params.require(:issue).permit(:title, :description, :status, :priority)
+    params.permit(:title, :description, :status, :priority, :issue_type, :workspace_id)
   end
 end

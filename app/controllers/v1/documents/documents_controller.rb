@@ -25,7 +25,7 @@ class V1::Documents::DocumentsController < ApplicationController
   end
 
   def update
-    if @document.update(document_params)
+    if @document.update(document_params.merge(updated_at: DateTime.current))
       render json: V1::DocumentSerializer.new(@document)
     else
       render json: @document.errors, status: :unprocessable_entity
@@ -51,6 +51,6 @@ class V1::Documents::DocumentsController < ApplicationController
   end
 
   def document_params
-    params.permit(:title, :content, :is_template, :category_id)
+    params.permit(:title, :is_template, :category_id,  content: {})
   end
 end
