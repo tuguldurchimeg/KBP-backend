@@ -3,26 +3,26 @@ class V1::Tools::GlossariesController < ApplicationController
   before_action :set_glossary, only: %i[show update destroy]
 
   def index
-    glossaries = Tool::Glossary.all
-    render json: glossaries
+    glossaries = Tool::Glossary.where(workspace_id: params[:workspace_id])
+    render json: V1::GlossarySerializer.new(glossaries)
   end
 
   def show
-    render json: @glossary
+    render json: V1::GlossarySerializer.new(@glossary)
   end
 
   def create
-    glossary = Tool::Glossary.new(glossary_params)
-    if glossary.save
-      render json: glossary, status: :created
+    @glossary = Tool::Glossary.new(glossary_params)
+    if @glossary.save
+      render json: V1::GlossarySerializer.new(@glossary), status: :created
     else
-      render json: glossary.errors, status: :unprocessable_entity
+      render json: @glossary.errors, status: :unprocessable_entity
     end
   end
 
   def update
     if @glossary.update(glossary_params)
-      render json: @glossary
+      render json: V1::GlossarySerializer.new(@glossary)
     else
       render json: @glossary.errors, status: :unprocessable_entity
     end
@@ -42,6 +42,6 @@ class V1::Tools::GlossariesController < ApplicationController
   end
 
   def glossary_params
-    params.require(:glossary).permit(:name, :description)
+    params.require(:glossary).permit(:name, :content, :workspace_id)
   end
 end

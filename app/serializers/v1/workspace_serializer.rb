@@ -7,4 +7,7 @@ class V1::WorkspaceSerializer
   attribute :categories do |object|
     V1::CategorySerializer.new(object.categories)
   end
+  attribute :documents do |object|
+    V1::DocumentSerializer.new(object.documents.where(category_id: nil))
+  end
 end

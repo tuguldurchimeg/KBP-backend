@@ -16,7 +16,7 @@ class V1::Documents::DocumentsController < ApplicationController
   end
 
   def create
-    @document = Document::Document.new(document_params)
+    @document = Document::Document.new(document_params.merge(user_id: @current_user.id))
     if @document.save
       render json: V1::DocumentSerializer.new(@document), status: :created
     else
@@ -51,6 +51,6 @@ class V1::Documents::DocumentsController < ApplicationController
   end
 
   def document_params
-    params.permit(:title, :is_template, :category_id,  content: {})
+    params.permit(:title, :is_template, :category_id, :workspace_id, content: {} )
   end
 end

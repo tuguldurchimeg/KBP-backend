@@ -22,6 +22,6 @@ class V1::DocumentSerializer
     V1::CategorySerializer.new(object.category)
   end
   attribute :workspace_id do |object|
-    object.category.workspace_id
+    object.workspace.id
   end
 end

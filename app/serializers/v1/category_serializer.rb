@@ -10,6 +10,6 @@ class V1::CategorySerializer
   end
 
   attribute :documents do |object|
-    V1::DocumentSerializer.new(object.documents)
+    V1::DocumentSerializer.new(object.documents.where(is_template: false))
   end
 end

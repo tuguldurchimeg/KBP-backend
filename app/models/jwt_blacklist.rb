@@ -1,5 +1,5 @@
 class JwtBlacklist < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, class_name: 'Base::User', foreign_key: :user_id
 
   validates :user_id, numericality: { only_integer: true }
 
