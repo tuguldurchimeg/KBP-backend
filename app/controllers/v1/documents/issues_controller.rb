@@ -3,7 +3,7 @@ class V1::Documents::IssuesController < ApplicationController
   before_action :set_issue, only: %i[show update destroy]
 
   def index
-    @issues = Document::Issue.all
+    @issues = Document::Issue.where(workspace_id: params[:workspace_id])
     render json: V1::IssueSerializer.new(@issues)
   end
 
