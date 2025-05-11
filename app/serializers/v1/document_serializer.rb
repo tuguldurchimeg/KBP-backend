@@ -1,6 +1,6 @@
 class V1::DocumentSerializer
   include FastJsonapi::ObjectSerializer
-  attributes :title, :content, :created_at, :updated_at, :is_template
+  attributes :title, :content, :view_count, :created_at, :updated_at, :is_template
   show_detail = proc do |record, params|
     params[:show_detail]
   end

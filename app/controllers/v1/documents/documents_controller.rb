@@ -12,6 +12,7 @@ class V1::Documents::DocumentsController < ApplicationController
   end
 
   def show
+    @document.update(view_count: @document.view_count + 1)
     render json: V1::DocumentSerializer.new(@document, params: { show_details: true })
   end
 
@@ -38,7 +39,7 @@ class V1::Documents::DocumentsController < ApplicationController
   end
 
   def quick_access
-    @documents = Document::Document.where(is_template: false).order(view_count: :asc)
+    @documents = Document::Document.where(is_template: false).order(view_count: :desc)
     render json: V1::DocumentSerializer.new(@documents)
   end
 

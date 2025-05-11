@@ -6,6 +6,11 @@ Rails.application.routes.draw do
     resources :workspaces
     resources :companies
     resources :roles
+    resources :s3 do
+      collection do
+        post :presigned_url
+      end
+    end
 
     namespace :documents do
       resources :documents do

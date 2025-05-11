@@ -27,8 +27,8 @@ module S3Helper
     "avatar/user_#{user_id}/#{timestamped(file_name)}"
   end
 
-  def self.user_file_path(user_id, file_name)
-    "files/user_#{user_id}/#{Time.now.strftime('%Y/%m')}/#{timestamped(file_name)}"
+  def self.file_path(user_id, file_name)
+    "file/user_#{user_id}/#{Time.now.strftime('%Y/%m')}/#{timestamped(file_name)}"
   end
 
   private
