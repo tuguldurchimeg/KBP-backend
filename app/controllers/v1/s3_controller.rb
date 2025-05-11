@@ -3,7 +3,8 @@ class V1::S3Controller < ApplicationController
 
   DOCUMENTS = 'documents'
   AVATAR = 'avatar'
-  FILES = 'files'
+  FILES = 'file'
+  WORKSPACE = 'workspace'
 
   def presigned_url
     file_name = params[:file_name]
@@ -19,48 +20,46 @@ class V1::S3Controller < ApplicationController
     case content_type
     when AVATAR
       # jishee: avatar/user_23/profile.png
-      bucket_folder += "/avatar/user_#{@current_user.id}"
+      bucket_folder += "avatar/user_#{@current_user.id}"
 
     when DOCUMENTS
       document_id = params[:document_id]
       return respond('Missing parameter document_id', :unprocessable_entity) unless document_id.present?
 
       # jishee: documents/456/filename
-      bucket_folder += "/documents/#{document_id}"
+      bucket_folder += "document/#{document_id}"
+
+    when WORKSPACE
+      workspace_id = params[:workspace_id]
+      return respond('Missing parameter document_id', :unprocessable_entity) unless workspace_id.present?
+      bucket_folder += "workspace/#{workspace_id}"
 
     when FILES
-      bucket_folder += "/files/user_#{@current_user.id}/#{Time.now.strftime('%Y/%m')}"
+      bucket_folder += "file/company_#{@current_user.company_id}/#{Time.now.strftime('%Y/%m')}"
 
     else
       return respond("Invalid content_type. Must be 'avatar', 'files', or 'documents'", :unprocessable_entity)
     end
+    bucket_folder += "/#{file_name}"
+    file_name = "#{Time.now.to_i}-#{file_name}"
 
-    file_name = "#{Time.now.to_i}_#{file_name}"
-    full_key = "#{bucket_folder}/#{file_name}"
-
-    render json: create_presigned_url(full_key, mime_type)
+    render json: create_presigned_url(bucket_folder, file_name, mime_type)
   end
 
   private
 
-  def create_presigned_url(key, mime_type, acl = 'public-read')
+  def create_presigned_url(folder, file_name, mime_type, acl = 'public-read')
     # key - bucket_folder/object_id/filename
-    s3 = Aws::S3::Resource.new
-    bucket = s3.bucket(ENV['S3_BUCKET_NAME'])
-    obj = bucket.object(key)
-
-    presigned_url = obj.presigned_url(
+    puts S3_BUCKET.name
+    presigned_url = S3_BUCKET.object(folder).presigned_url(
       :put,
-      content_type: mime_type,
-      expires_in: 1800,
-      acl: acl
+      {
+				content_type: mime_type,
+				expires_in: 1800,
+				# acl: acl
+			}
     )
-
-    {
-      upload_url: presigned_url,
-      file_url: obj.public_url,
-      key: key,
-      file_name: File.basename(key)
-    }
+		file_url = S3_BUCKET.url + '/' + folder
+		{ url: presigned_url, file_url: file_url, file_name: file_name, key: folder }
   end
 end
