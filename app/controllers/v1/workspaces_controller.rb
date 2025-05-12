@@ -3,7 +3,7 @@ class V1::WorkspacesController < ApplicationController
   before_action :set_workspace, only: %i[show update destroy]
 
   def index
-    @workspaces = Base::Workspace.all
+    @workspaces = Base::Workspace.all.order(id: :asc)
     render json: V1::WorkspaceSerializer.new(@workspaces)
   end
 
@@ -42,6 +42,6 @@ class V1::WorkspacesController < ApplicationController
   end
 
   def workspace_params
-    params.require(:workspace).permit(:name, :company_id, :description)
+    params.require(:workspace).permit(:name, :company_id, :description, :image_url)
   end
 end

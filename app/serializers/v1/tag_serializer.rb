@@ -3,7 +3,7 @@ class V1::TagSerializer
   attributes :name, :description, :color, :created_at
 
   attribute :documents do |object|
-    doc_ids = object.document_tags.pluck(:document_id)
+    doc_ids = object.tag_documents.pluck(:document_id)
     docs = Document::Document.where(id: doc_ids)
     V1::DocumentSerializer.new(docs)
   end

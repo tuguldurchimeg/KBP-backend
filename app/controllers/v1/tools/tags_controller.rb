@@ -3,7 +3,7 @@ class V1::Tools::TagsController < ApplicationController
   before_action :set_tag, only: %i[show update destroy]
 
   def index
-    @tags = Tool::Tag.all
+    @tags = Tool::Tag.where(workspace_id: params[:workspace_id])
     render json: V1::TagSerializer.new(@tags)
   end
 
@@ -42,6 +42,6 @@ class V1::Tools::TagsController < ApplicationController
   end
 
   def tag_params
-    params.require(:tag).permit(:name, :description, :color)
+    params.require(:tag).permit(:name, :description, :color, :workspace_id)
   end
 end

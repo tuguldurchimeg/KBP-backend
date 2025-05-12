@@ -1,6 +1,6 @@
 class V1::WorkspaceSerializer
   include FastJsonapi::ObjectSerializer
-  attributes :name, :description, :created_at, :updated_at
+  attributes :name, :description, :image_url, :created_at, :updated_at
   attribute :company do |object|
     V1::CompanySerializer.new(object.company)
   end
@@ -8,6 +8,6 @@ class V1::WorkspaceSerializer
     V1::CategorySerializer.new(object.categories)
   end
   attribute :documents do |object|
-    V1::DocumentSerializer.new(object.documents.where(category_id: nil))
+    V1::DocumentSerializer.new(object.documents.where(category_id: nil, is_template: false))
   end
 end

@@ -9,7 +9,7 @@ class V1::DocumentSerializer
   end
 
   attribute :tags, if: show_detail do |object|
-    tag_ids = object.document_tags.pluck(:tag_id)
+    tag_ids = object.tag_documents.pluck(:tag_id)
     tags = Tool::Tag.where(id: tag_ids)
     V1::TagSerializer.new(tags)
   end

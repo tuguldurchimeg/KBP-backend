@@ -1,6 +1,6 @@
-class CreateDocumentTags < ActiveRecord::Migration[6.1]
+class CreateTagDocuments < ActiveRecord::Migration[7.0]
   def change
-    create_table :document_tags do |t|
+    create_table :tag_documents do |t|
       t.bigint :document_id, null: false
       t.bigint :tag_id, null: false
 
