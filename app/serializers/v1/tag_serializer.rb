@@ -1,6 +1,6 @@
 class V1::TagSerializer
   include FastJsonapi::ObjectSerializer
-  attributes :name, :description, :color, :created_at
+  attributes :name, :description, :color, :workspace_id, :created_at
 
   attribute :documents do |object|
     doc_ids = object.tag_documents.pluck(:document_id)
