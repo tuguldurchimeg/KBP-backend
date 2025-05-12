@@ -52,6 +52,15 @@ class V1::Documents::DocumentsController < ApplicationController
     end
   end
 
+  def set_document_file
+    @file_doc = Document::FileDocument.new(file_doc_params)
+    if @file_doc.save
+      render json: V1::DocumentSerializer.new(@file_doc.document)
+    else
+      render json: @file_doc.errors, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_document
@@ -66,5 +75,9 @@ class V1::Documents::DocumentsController < ApplicationController
 
   def tag_doc_params
     params.permit(:document_id, :tag_id)
+  end
+
+  def file_doc_params
+    params.permit(:document_id, :file_id)
   end
 end

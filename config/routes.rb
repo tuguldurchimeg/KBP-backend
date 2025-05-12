@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       resources :documents do
         get :quick_access, on: :collection
         post :set_document_tag, on: :collection
+        post :set_document_file, on: :collection
       end
       resources :issues do
         post :assign, on: :collection
@@ -23,6 +24,7 @@ Rails.application.routes.draw do
       end
       resources :issue_comments
       resources :categories
+      resources :files
     end
 
     namespace :tools do

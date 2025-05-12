@@ -1,14 +1,19 @@
 class V1::Documents::FilesController < ApplicationController
   before_action :authorize_request
-  before_action :set_file, only: %i[show destroy]
+  before_action :set_file, only: %i[destroy]
 
   def index
     @files = Document::File.where(workspace_id: params[:workspace_id])
     render json: V1::FileSerializer.new(@files)
   end
 
-  def show
-    render json: V1::FileSerializer.new(@file)
+  def create
+    @file = Document::File.new(file_params.merge(user_id: @current_user.id))
+    if @file.save
+      render json: @file
+    else
+      render json: @file.errors, status: :unprocessable_entity
+    end
   end
 
   def destroy
@@ -25,6 +30,6 @@ class V1::Documents::FilesController < ApplicationController
   end
 
   def file_params
-    params.permit(:name, :content, :document_id, :workspace_id)
+    params.permit(:name, :url, :size, :file_type, :workspace_id)
   end
 end

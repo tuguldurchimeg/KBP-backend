@@ -7,7 +7,7 @@ class V1::FileSerializer
   end
 
   attribute :documents do |object|
-    docs = Document::Document.where(id: object.file_documents.select(:document_id))
+    docs = Document::Document.where(id: object.file_documents.pluck(:document_id))
     V1::DocumentSerializer.new(docs)
   end
 end
