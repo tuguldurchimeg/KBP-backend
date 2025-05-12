@@ -8,12 +8,12 @@ class V1::Documents::DocumentsController < ApplicationController
     else
       @documents = Document::Document.where(is_template: false)
     end
-    render json: V1::DocumentSerializer.new(@documents, params: { show_details: true })
+    render json: V1::DocumentSerializer.new(@documents)
   end
 
   def show
     @document.update(view_count: @document.view_count + 1)
-    render json: V1::DocumentSerializer.new(@document, params: { show_details: true })
+    render json: V1::DocumentSerializer.new(@document, params: { show_detail: true })
   end
 
   def create
