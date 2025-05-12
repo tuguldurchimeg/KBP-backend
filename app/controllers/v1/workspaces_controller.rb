@@ -8,7 +8,7 @@ class V1::WorkspacesController < ApplicationController
   end
 
   def show
-    render json: V1::WorkspaceSerializer.new(@workspace)
+    render json: V1::WorkspaceSerializer.new(@workspace, params: { show_detail: true })
   end
 
   def create
