@@ -43,6 +43,15 @@ class V1::Documents::DocumentsController < ApplicationController
     render json: V1::DocumentSerializer.new(@documents)
   end
 
+  def set_document_tag
+    @tag_doc = Tool::TagDocument.new(tag_doc_params)
+    if @tag_doc.save
+      render json: V1::DocumentSerializer.new(@tag_doc.document)
+    else
+      render json: @tag_doc.errors, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def set_document
@@ -53,5 +62,9 @@ class V1::Documents::DocumentsController < ApplicationController
 
   def document_params
     params.permit(:title, :is_template, :category_id, :workspace_id, content: {} )
+  end
+
+  def tag_doc_params
+    params.permit(:document_id, :tag_id)
   end
 end

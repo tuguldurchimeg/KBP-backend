@@ -15,6 +15,7 @@ Rails.application.routes.draw do
     namespace :documents do
       resources :documents do
         get :quick_access, on: :collection
+        post :set_document_tag, on: :collection
       end
       resources :issues do
         post :assign, on: :collection
