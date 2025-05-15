@@ -8,7 +8,7 @@ class V1::Documents::CategoriesController < ApplicationController
 	end
 
 	def show
-		render json: V1::CategorySerializer.new(@category)
+		render json: V1::CategorySerializer.new(@category, params: { show_detail: true })
 	end
 
 	def create

@@ -33,6 +33,40 @@ class V1::WorkspacesController < ApplicationController
     head :no_content
   end
 
+  def search
+    query = params[:keyword].to_s.strip.downcase
+    workspace_id = params[:workspace_id]
+
+    return render json: { error: 'Missing query' }, status: :bad_request if query.blank?
+
+    documents = Document::Document.where(nil) # starts with a scope chain
+
+    if workspace_id.present?
+      documents = documents.where(workspace_id: workspace_id)
+    end
+
+    documents = documents.where(
+      "LOWER(title) LIKE :query OR EXISTS (
+        SELECT 1
+        FROM jsonb_path_query_array(documents.content, '$.content[*].content[*].text') AS text_elements(elem)
+        WHERE LOWER(elem::text) LIKE :query
+      )",
+      query: "%#{query}%"
+    )
+
+    categories = Document::Category.where('LOWER(name) ILIKE ?', "%#{query}%")
+    categories = categories.where(workspace_id: workspace_id) if workspace_id.present?
+
+    files = Document::File.includes(:file_documents).where('LOWER(name) ILIKE ?', "%#{query}%")
+    files = files.where(workspace_id: workspace_id) if workspace_id.present?
+
+    render json: {
+      documents: V1::DocumentSerializer.new(documents),
+      categories: V1::CategorySerializer.new(categories),
+      files: V1::FileSerializer.new(files)
+    }
+  end
+
   private
 
   def set_workspace

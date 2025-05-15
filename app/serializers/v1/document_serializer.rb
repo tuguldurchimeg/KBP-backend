@@ -4,9 +4,6 @@ class V1::DocumentSerializer
   show_detail = proc do |record, params|
     params[:show_detail]
   end
-  attribute :category, if: show_detail do |object|
-    V1::CategorySerializer.new(object.category)
-  end
 
   attribute :tags, if: show_detail do |object|
     tag_ids = object.tag_documents.pluck(:tag_id)
@@ -18,9 +15,10 @@ class V1::DocumentSerializer
     V1::UserSerializer.new(object.user)
   end
 
-  attribute :category, if: show_detail do |object|
+  attribute :category do |object|
     V1::CategorySerializer.new(object.category)
   end
+
   attribute :workspace_id do |object|
     object.workspace.id
   end

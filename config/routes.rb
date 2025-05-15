@@ -3,7 +3,9 @@ Rails.application.routes.draw do
   root to: 'application#welcome'
   namespace :v1 do
     resources :users
-    resources :workspaces
+    resources :workspaces do
+      get :search, on: :collection
+    end
     resources :workspace_role_details
     resources :companies
     resources :roles

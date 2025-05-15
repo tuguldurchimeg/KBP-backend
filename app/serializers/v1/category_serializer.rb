@@ -1,15 +1,17 @@
 class V1::CategorySerializer
   include FastJsonapi::ObjectSerializer
   attributes :name, :description, :parent_id
-  # attribute :workspace do |object|
-  #   V1::WorkspaceSerializer.new(object.company)
-  # end
-  attribute :subcategories do |object|
-    subs = Document::Category.where(parent_id: object.id)
-    V1::CategorySerializer.new(subs)
+
+  show_detail = proc do |record, params|
+    params[:show_detail]
   end
 
-  attribute :documents do |object|
+  attribute :subcategories, if: show_detail do |object|
+    subs = Document::Category.where(parent_id: object.id)
+    V1::CategorySerializer.new(subs, params: { show_detail: true })
+  end
+
+  attribute :documents, if: show_detail do |object|
     V1::DocumentSerializer.new(object.documents.where(is_template: false))
   end
 end
