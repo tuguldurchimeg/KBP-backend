@@ -6,7 +6,7 @@ class V1::Documents::DocumentsController < ApplicationController
     if params[:is_template].present? && params[:is_template]
       @documents = Document::Document.where(is_template: true, workspace_id: params[:workspace_id])
     else
-      @documents = Document::Document.where(is_template: false)
+      @documents = Document::Document.where(is_template: false, workspace_id: params[:workspace_id])
     end
     render json: V1::DocumentSerializer.new(@documents)
   end

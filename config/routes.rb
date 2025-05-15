@@ -20,6 +20,8 @@ Rails.application.routes.draw do
       end
       resources :issues do
         post :assign, on: :collection
+        delete :unassign, on: :collection
+        post :set_document, on: :collection
         get :report, on: :collection
       end
       resources :issue_comments

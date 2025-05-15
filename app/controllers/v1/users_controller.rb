@@ -4,7 +4,7 @@ class V1::UsersController < ApplicationController
 
   def index
     @users = Base::User.all
-    render json: @users
+    render json: V1::UserSerializer.new(@users)
   end
 
   def show

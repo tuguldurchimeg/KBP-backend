@@ -3,7 +3,7 @@ class V1::Documents::IssuesController < ApplicationController
   before_action :set_issue, only: %i[show update destroy]
 
   def index
-    @issues = Document::Issue.where(workspace_id: params[:workspace_id])
+    @issues = Document::Issue.where(workspace_id: params[:workspace_id]).order(created_at: :desc)
     render json: V1::IssueSerializer.new(@issues)
   end
 
@@ -65,9 +65,23 @@ class V1::Documents::IssuesController < ApplicationController
   def assign
     @issueAssignee = Document::IssueAssignee.new(user_id: params[:user_id], issue_id: params[:issue_id])
     if @issueAssignee.save
-      render json: V1::IssueAssigneeSerializer.new(@issueAssignee), status: :ok
+      render json: V1::UserSerializer.new(@issueAssignee.user)
     else
       render json: @issueAssignee.errors, status: :unprocessable_entity
+    end
+  end
+
+  def unassign
+    @issueAssignee = Document::IssueAssignee.find_by(user_id: params[:user_id], issue_id: params[:issue_id])
+    @issueAssignee&.destroy
+  end
+
+  def set_document
+    @issue_doc = Document::IssueDocument.new(document_id: params[:document_id], issue_id: params[:issue_id])
+    if @issue_doc.save
+      render json: V1::DocumentSerializer.new(@issue_doc.document)
+    else
+      render json: @issue_doc.errors, status: :unprocessable_entity
     end
   end
 

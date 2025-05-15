@@ -4,18 +4,18 @@ class V1::Documents::IssueCommentsController < ApplicationController
   before_action :set_comment, only: %i[show update destroy]
 
   def index
-    @comments = @issue.comments
-    render json: @comments
+    @comments = @issue.issue_comments
+    render json: V1::IssueCommentSerializer.new(@comments)
   end
 
   def show
-    render json: @comment
+    render json: V1::IssueCommentSerializer.new(@comment)
   end
 
   def create
-    @comment = @issue.comments.new(comment_params)
+    @comment = @issue.issue_comments.new(comment_params)
     if @comment.save
-      render json: @comment, status: :created
+      render json: V1::IssueCommentSerializer.new(@comment), status: :created
     else
       render json: @comment.errors, status: :unprocessable_entity
     end
@@ -23,7 +23,7 @@ class V1::Documents::IssueCommentsController < ApplicationController
 
   def update
     if @comment.update(comment_params)
-      render json: @comment
+      render json: V1::IssueCommentSerializer.new(@comment)
     else
       render json: @comment.errors, status: :unprocessable_entity
     end
@@ -49,6 +49,6 @@ class V1::Documents::IssueCommentsController < ApplicationController
   end
 
   def comment_params
-    params.require(:comment).permit(:content, :author_id)
+    params.permit(:comment, :user_id, :issue_id, :parent_id)
   end
 end
