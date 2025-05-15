@@ -7,10 +7,9 @@ class V1::AuthenticationController < ApplicationController
       return render json: { error: 'Google login failed' },
                     status: :unauthorized
     end
-
     user = Base::User.find_by!(email: user_data[:email])
     # return render json: { error: 'Google login failed' }, status: :unauthorized if user.nil?
-    user.update_login_count(user_data[:id].to_s) if user.provider_id?
+    user.update_login_count()
     render json: JsonWebToken.get_tokens({ email: user.email }).to_json, status: :ok
   end
 

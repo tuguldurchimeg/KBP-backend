@@ -30,8 +30,7 @@ class Base::User < ApplicationRecord
     save!
   end
 
-  def update_login_count(provider_id)
-    update(provider_id: provider_id)
+  def update_login_count()
     increment!(:login_count)
   end
 
