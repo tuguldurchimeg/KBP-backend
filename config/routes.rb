@@ -42,6 +42,7 @@ Rails.application.routes.draw do
 
     post 'login', to: 'authentication#login'
     post 'logout', to: 'authentication#logout'
+    post 'google_login', to: 'authentication#social_login'
     post 'refresh_token', to: 'authentication#refresh_token'
     get 'app_init', to: 'main#app_init'
     get 'profile', to: 'authentication#show'
