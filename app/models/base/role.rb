@@ -4,5 +4,4 @@ class Base::Role < ApplicationRecord
   belongs_to :company, class_name: 'Base::Company', foreign_key: :company_id
 
   validates :name, presence: true
-  validates :description, presence: true
 end

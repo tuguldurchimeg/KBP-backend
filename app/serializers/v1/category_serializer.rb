@@ -13,7 +13,7 @@ class V1::CategorySerializer
 
   attribute :documents, if: show_detail do |object, params|
     docs = object.documents.where(is_template: false)
-    docs = docs.left_joins(:tag_documents).where(tag_documents: { tag_id: params[:tag_ids]}) if params[:tag_ids].present?
+    docs = docs.left_joins(:tag_documents).where(tag_documents: { tag_id: params[:tag_ids]}).uniq if params[:tag_ids].present?
     V1::DocumentSerializer.new(docs)
   end
 end

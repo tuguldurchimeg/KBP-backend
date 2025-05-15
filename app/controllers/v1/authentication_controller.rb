@@ -109,6 +109,40 @@ class V1::AuthenticationController < ApplicationController
     render json: { status: 'ok' }, status: :ok
   end
 
+  def signup
+    required_params = %i[firstname lastname email company password password_confirm]
+    if required_params.any? { |key| params[key].blank? }
+      return render json: { error: 'Missing required fields' }, status: :unprocessable_entity
+    end
+
+    return render json: { error: 'Passwords do not match' }, status: :unprocessable_entity unless params[:password] == params[:password_confirm]
+
+    if Base::User.exists?(email: params[:email].downcase)
+      return render json: { error: 'Email already registered' }, status: :unprocessable_entity
+    end
+
+    company = Base::Company.find_or_create_by!(name: params[:company]) do |c|
+      c.uid = SecureRandom.uuid
+    end
+    role = company.roles.create!(name: 'Owner')
+
+    user = Base::User.new(
+      firstname: params[:firstname],
+      lastname: params[:lastname],
+      email: params[:email].downcase,
+      company: company,
+      password: params[:password],
+      role: role,
+      uid: SecureRandom.uuid
+    )
+
+    if user.save
+      render json: { success: 'User registered successfully', email: user.email }
+    else
+      render json: { error: user.errors.full_messages.to_sentence }, status: :unprocessable_entity
+    end
+  end
+
   def password_change
     if @current_user&.password_digest.present? && @current_user.authenticate(params[:current_password])
       if params[:new_password] == params[:confirm_new_password]
