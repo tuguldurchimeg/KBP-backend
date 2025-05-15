@@ -7,8 +7,18 @@ class Base::Workspace < ApplicationRecord
   has_many :tags, dependent: :destroy, class_name: 'Tool::Tag'
   has_many :glossaries, dependent: :destroy, class_name: 'Tool::Glossary'
   has_many :seos, dependent: :destroy, class_name: 'Tool::Seo'
+  has_many :workspace_role_details, class_name: 'Base::WorkspaceRoleDetail'
 
   validates :name, presence: true, uniqueness: true
   validates :creator_id, presence: true
 
+  def create_workspace_roles(current_user)
+    Base::WorkspaceRoleDetail.create!(user_id: current_user.id, workspace_id: self.id, action: Base::WorkspaceRoleDetail.actions[:admin])
+    users = Base::User.where(company_id: company_id).where.not(id: current_user.id)
+    users.each do |user|
+      workspace_role = Base::WorkspaceRoleDetail.find_or_initialize_by(user_id: user.id, workspace_id: self.id)
+      workspace_role.action = Base::WorkspaceRoleDetail.actions[:read]
+      workspace_role.save!
+    end
+  end
 end

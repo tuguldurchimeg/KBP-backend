@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   namespace :v1 do
     resources :users
     resources :workspaces
+    resources :workspace_role_details
     resources :companies
     resources :roles
     resources :s3 do

@@ -13,11 +13,11 @@ class V1::WorkspacesController < ApplicationController
 
   def create
     @workspace = Base::Workspace.new(workspace_params.merge(creator_id: @current_user.id, company_id: 1))
-    if @workspace.save
-      render json: V1::WorkspaceSerializer.new(@workspace), status: :created
-    else
-      render json: @workspace.errors, status: :unprocessable_entity
+    ActiveRecord::Base.transaction do
+      @workspace.save!
+      @workspace.create_workspace_roles(@current_user)
     end
+    render json: V1::WorkspaceSerializer.new(@workspace), status: :created
   end
 
   def update

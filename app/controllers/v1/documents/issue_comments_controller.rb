@@ -4,7 +4,7 @@ class V1::Documents::IssueCommentsController < ApplicationController
   before_action :set_comment, only: %i[show update destroy]
 
   def index
-    @comments = @issue.issue_comments
+    @comments = @issue.issue_comments.where(parent_id: nil)
     render json: V1::IssueCommentSerializer.new(@comments)
   end
 

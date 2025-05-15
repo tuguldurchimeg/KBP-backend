@@ -4,6 +4,7 @@ class Base::User < ApplicationRecord
   belongs_to :company, foreign_key: :company_id, class_name: 'Base::Company'
   belongs_to :role, foreign_key: :role_id, class_name: 'Base::Role'
   has_many :workspaces, class_name: 'Base::Workspace'
+  has_many :workspace_role_details, class_name: 'Base::WorkspaceRoleDetail'
   has_many :documents, class_name: 'Document::Document'
   has_many :issues, class_name: 'Document::Issue'
   has_many :issue_comments, class_name: 'Document::IssueComment'
