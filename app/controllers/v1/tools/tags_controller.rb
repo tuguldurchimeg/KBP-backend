@@ -4,11 +4,11 @@ class V1::Tools::TagsController < ApplicationController
 
   def index
     @tags = Tool::Tag.where(workspace_id: params[:workspace_id])
-    render json: V1::TagSerializer.new(@tags)
+    render json: V1::TagSerializer.new(@tags, params: { show_docs: true })
   end
 
   def show
-    render json: V1::TagSerializer.new(@tag)
+    render json: V1::TagSerializer.new(@tag, params: { show_docs: true })
   end
 
   def create

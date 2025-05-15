@@ -9,15 +9,21 @@ class V1::WorkspaceSerializer
     V1::CompanySerializer.new(object.company)
   end
 
-  attribute :categories, if: show_detail do |object|
-    V1::CategorySerializer.new(object.categories, params: { show_detail: true } )
+  attribute :categories, if: show_detail do |object, params|
+    V1::CategorySerializer.new(object.categories, params: { show_detail: true, tag_ids: params[:tag_ids] } )
   end
 
-  attribute :documents, if: show_detail do |object|
-    V1::DocumentSerializer.new(object.documents.where(category_id: nil, is_template: false))
+  attribute :documents, if: show_detail do |object, params|
+    docs = object.documents.where(category_id: nil, is_template: false)
+    docs = docs.left_joins(:tag_documents).where(tag_documents: { tag_id: params[:tag_ids]}) if params[:tag_ids].present?
+    V1::DocumentSerializer.new(docs)
   end
 
   attribute :issues, if: show_detail do |object|
     V1::IssueSerializer.new(object.issues)
+  end
+
+  attribute :tags, if: show_detail do |object|
+    V1::TagSerializer.new(object.tags)
   end
 end

@@ -6,12 +6,14 @@ class V1::CategorySerializer
     params[:show_detail]
   end
 
-  attribute :subcategories, if: show_detail do |object|
+  attribute :subcategories, if: show_detail do |object, params|
     subs = Document::Category.where(parent_id: object.id)
-    V1::CategorySerializer.new(subs, params: { show_detail: true })
+    V1::CategorySerializer.new(subs, params: { show_detail: true, tag_ids: params[:tag_isd] })
   end
 
-  attribute :documents, if: show_detail do |object|
-    V1::DocumentSerializer.new(object.documents.where(is_template: false))
+  attribute :documents, if: show_detail do |object, params|
+    docs = object.documents.where(is_template: false)
+    docs = docs.left_joins(:tag_documents).where(tag_documents: { tag_id: params[:tag_ids]}) if params[:tag_ids].present?
+    V1::DocumentSerializer.new(docs)
   end
 end
