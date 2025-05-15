@@ -52,6 +52,11 @@ class V1::Documents::DocumentsController < ApplicationController
     end
   end
 
+  def del_document_tag
+    @tag_doc = Tool::TagDocument.find_by(document_id: params[:document_id], tag_id: params[:tag_id])
+    @tag_doc&.destroy
+  end
+
   def set_document_file
     @file_doc = Document::FileDocument.new(file_doc_params)
     if @file_doc.save
@@ -59,6 +64,11 @@ class V1::Documents::DocumentsController < ApplicationController
     else
       render json: @file_doc.errors, status: :unprocessable_entity
     end
+  end
+
+  def del_document_file
+    @file_doc = Document::FileDocument.find_by(document_id: params[:document_id], file_id: params[:file_id])
+    @file_doc&.destroy
   end
 
   private
