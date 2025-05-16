@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     resources :users
     resources :workspaces do
       get :search, on: :collection
+      get :user_role, on: :member
     end
     resources :workspace_role_details
     resources :companies

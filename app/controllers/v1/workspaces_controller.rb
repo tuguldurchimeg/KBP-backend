@@ -34,6 +34,11 @@ class V1::WorkspacesController < ApplicationController
     head :no_content
   end
 
+  def user_role
+    @workspace_role = Base::WorkspaceRoleDetail.find_by(workspace_id: params[:id], user_id: params[:user_id])
+    render json: V1::WorkspaceRoleDetailSerializer.new(@workspace_role)
+  end
+
   def search
     query = params[:keyword].to_s.strip.downcase
     workspace_id = params[:workspace_id]
