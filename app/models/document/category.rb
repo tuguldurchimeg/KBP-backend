@@ -3,4 +3,6 @@ class Document::Category < ApplicationRecord
   has_many :documents
 
   validates :name, presence: true
+
+  default_scope { where(workspace_id: Base::Workspace.select(:id)) }
 end

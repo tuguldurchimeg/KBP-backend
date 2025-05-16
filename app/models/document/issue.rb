@@ -9,4 +9,5 @@ class Document::Issue < ApplicationRecord
   enum priority: { low: 0, medium: 1, high: 2,  }
   enum issue_type: { problem: 0, question: 1 }
 
+  default_scope { where(workspace_id: Base::Workspace.select(:id)) }
 end

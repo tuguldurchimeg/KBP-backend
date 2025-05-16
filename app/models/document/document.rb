@@ -6,4 +6,6 @@ class Document::Document < ApplicationRecord
   has_many :tag_documents, class_name: 'Tool::TagDocument'
 
   validates :title, presence: true
+
+  default_scope { where(workspace_id: Base::Workspace.select(:id)) }
 end

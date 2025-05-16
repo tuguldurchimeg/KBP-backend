@@ -4,4 +4,6 @@ class Document::File < ApplicationRecord
   has_many :file_documents, class_name: 'Document::FileDocument'
 
   validates :url, presence: true
+
+  default_scope { where(workspace_id: Base::Workspace.select(:id)) }
 end

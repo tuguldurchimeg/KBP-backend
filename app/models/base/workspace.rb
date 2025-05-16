@@ -12,12 +12,17 @@ class Base::Workspace < ApplicationRecord
   validates :name, presence: true, uniqueness: true
   validates :creator_id, presence: true
 
+  default_scope { left_joins(:company).where(company: { uid: Current.current_company }) }
+
   def create_workspace_roles(current_user)
-    Base::WorkspaceRoleDetail.create!(user_id: current_user.id, workspace_id: self.id, action: Base::WorkspaceRoleDetail.actions[:admin])
-    users = Base::User.where(company_id: company_id).where.not(id: current_user.id)
+    puts "workspace: #{self.inspect}"
+    Base::WorkspaceRoleDetail.create!(user_id: current_user.id, workspace_id: self.id, action: :admin)
+    users = Base::User.where.not(id: current_user.id)
+    puts 'Checkhere22'
+
     users.each do |user|
       workspace_role = Base::WorkspaceRoleDetail.find_or_initialize_by(user_id: user.id, workspace_id: self.id)
-      workspace_role.action = Base::WorkspaceRoleDetail.actions[:read]
+      workspace_role.action = :read
       workspace_role.save!
     end
   end

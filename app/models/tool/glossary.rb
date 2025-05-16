@@ -3,4 +3,5 @@ class Tool::Glossary < ApplicationRecord
 
   validates :name, presence: true
   validates :content, presence: true
+  default_scope { where(workspace_id: Base::Workspace.select(:id)) }
 end

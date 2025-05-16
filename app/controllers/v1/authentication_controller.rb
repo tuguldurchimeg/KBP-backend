@@ -7,7 +7,7 @@ class V1::AuthenticationController < ApplicationController
       return render json: { error: 'Google login failed' },
                     status: :unauthorized
     end
-    user = Base::User.find_by!(email: user_data[:email])
+    user = Base::User.unscoped.find_by!(email: user_data[:email])
     # return render json: { error: 'Google login failed' }, status: :unauthorized if user.nil?
     user.update_login_count()
     render json: JsonWebToken.get_tokens({ email: user.email }).to_json, status: :ok
@@ -19,7 +19,7 @@ class V1::AuthenticationController < ApplicationController
                     status: :unauthorized
     end
 
-    user = Base::User.authenticated_user(params)
+    user = Base::User.unscoped.authenticated_user(params)
     if user
       render json: JsonWebToken.get_tokens({ email: user.email }).to_json, status: :ok
     else
@@ -32,7 +32,7 @@ class V1::AuthenticationController < ApplicationController
   end
 
   def forgot_password
-    user = Base::User.confirmation_code_sent(params)
+    user = Base::User.unscoped.confirmation_code_sent(params)
     if user
       PasswordMailer.with(
         user: user
@@ -44,7 +44,7 @@ class V1::AuthenticationController < ApplicationController
   end
 
   def confirm_reset
-    user = Base::User.find_by_email(params[:email]&.downcase)
+    user = Base::User.unscoped.find_by_email(params[:email]&.downcase)
     return render json: { error: 'Unregistered email address' }, status: :unprocessable_entity unless user.present?
 
     unless user.password_code_valid?
@@ -60,7 +60,7 @@ class V1::AuthenticationController < ApplicationController
   end
 
   def save
-    @user = Base::User.find_by_email(params[:email].downcase)
+    @user = Base::User.unscoped.find_by_email(params[:email].downcase)
     return render json: { error: 'Unregistered email address' }, status: :unauthorized unless @user.present?
     return render json: { error: 'Confirmation code expired' }, status: :unauthorized unless @user.password_code_valid?
     unless params[:confirmation_code].to_i.eql? @user.confirmation_code
@@ -86,7 +86,7 @@ class V1::AuthenticationController < ApplicationController
 
   def refresh_token
     decoded = JsonWebToken.decode_refresh_token(params[:refresh_token]&.strip)
-    user = Base::User.find_by(email: decoded[:email])
+    user = Base::User.unscoped.find_by(email: decoded[:email])
     if decoded[:token_at].present?
       jwt_blacklist = JwtBlacklist.where(user_id: user.id, token_at: decoded[:token_at]).last
       return render json: { error: 'Invalid token' }, status: :unauthorized if jwt_blacklist.present?
@@ -117,7 +117,7 @@ class V1::AuthenticationController < ApplicationController
 
     return render json: { error: 'Passwords do not match' }, status: :unprocessable_entity unless params[:password] == params[:password_confirm]
 
-    if Base::User.exists?(email: params[:email].downcase)
+    if Base::User.unscoped.exists?(email: params[:email].downcase)
       return render json: { error: 'Email already registered' }, status: :unprocessable_entity
     end
 
@@ -126,7 +126,7 @@ class V1::AuthenticationController < ApplicationController
     end
     role = company.roles.create!(name: 'Owner')
 
-    user = Base::User.new(
+    user = Base::User.unscoped.new(
       firstname: params[:firstname],
       lastname: params[:lastname],
       email: params[:email].downcase,
@@ -162,7 +162,7 @@ class V1::AuthenticationController < ApplicationController
   end
 
   def resend_code
-    user = Base::User.find_by_email(params[:email].downcase)
+    user = Base::User.unscoped.find_by_email(params[:email].downcase)
     if user
       PasswordMailer.with(
         user: user

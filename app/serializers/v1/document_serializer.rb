@@ -20,6 +20,6 @@ class V1::DocumentSerializer
   end
 
   attribute :workspace_id do |object|
-    object.workspace.id
+    object.workspace&.id
   end
 end

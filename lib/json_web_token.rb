@@ -26,7 +26,7 @@ class JsonWebToken
 
   def self.get_tokens(payload)
     payload[:token_at] = Time.now.to_i
-    user = Base::User.find_by_email(payload[:email]&.downcase)
+    user = Base::User.unscoped.find_by_email(payload[:email]&.downcase)
     {
       id: user.id,
       uid: user.uid,

@@ -17,6 +17,8 @@ class Base::User < ApplicationRecord
   validates :password, length: { minimum: 8 }, format: { with: /\A^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x21-\x7E]){8,}$\z/ },
                        allow_blank: true
 
+  default_scope { left_joins(:company).where(company: { uid: Current.current_company }) }
+
   def password_code_valid?
     return false unless confirmation_expires.present?
 

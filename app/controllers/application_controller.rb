@@ -6,8 +6,8 @@ class ApplicationController < ActionController::API
     @timezone = request.headers['Time-Zone'].present? ? request.headers['Time-Zone'] : UTC_TIMEZONE
     token = auth_header.split(' ').last
     @decoded = JsonWebToken.decode(token)
-    puts "decodedd: #{@decoded}"
-    @current_user = Base::User.find_by(email: @decoded[:email])
+    current_company
+    @current_user = Base::User.unscoped.find_by(email: @decoded[:email])
   rescue JWT::ExpiredSignature
     render json: { error: 'Token expired' }, status: :unauthorized
   rescue JWT::DecodeError, ActiveRecord::RecordNotFound
@@ -25,6 +25,11 @@ class ApplicationController < ActionController::API
   end
 
   attr_reader :current_user
+
+  def current_company
+    user = Base::User.unscoped.where(email: @decoded[:email]).first
+    Current.current_company = user.company.uid
+  end
 
   def paginate(scope)
     Paginator.paginate(scope, params)

@@ -12,7 +12,8 @@ class V1::WorkspacesController < ApplicationController
   end
 
   def create
-    @workspace = Base::Workspace.new(workspace_params.merge(creator_id: @current_user.id, company_id: 1))
+    company = Base::Company.find_by(uid: Current.current_company)
+    @workspace = Base::Workspace.new(workspace_params.merge(creator_id: @current_user.id, company_id: company.id))
     ActiveRecord::Base.transaction do
       @workspace.save!
       @workspace.create_workspace_roles(@current_user)
