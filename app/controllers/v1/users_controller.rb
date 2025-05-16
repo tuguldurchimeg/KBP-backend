@@ -14,7 +14,8 @@ class V1::UsersController < ApplicationController
   def create
     @user = Base::User.new(user_params)
     @user.uid = SecureRandom.uuid
-    @user.password = "#{user_params[:firstname]}@1234"
+    default_password = ENV['DEFAULT_USER_PASSWORD']
+    @user.password = default_password
     company = Base::Company.find_by(uid: Current.current_company)
     @user.role = company.roles.first
     @user.company = company
