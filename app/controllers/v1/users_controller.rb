@@ -3,7 +3,7 @@ class V1::UsersController < ApplicationController
   before_action :set_user, only: %i[show update destroy]
 
   def index
-    @users = Base::User.all
+    @users = Base::User.all.order(id: :desc)
     render json: V1::UserSerializer.new(@users, params: {show_issue: true})
   end
 
@@ -14,6 +14,11 @@ class V1::UsersController < ApplicationController
   def create
     @user = Base::User.new(user_params)
     @user.uid = SecureRandom.uuid
+    @user.password = "#{user_params[:firstname]}@1234"
+    company = Base::Company.find_by(uid: Current.current_company)
+    @user.role = company.roles.first
+    @user.company = company
+
     if @user.save
       render json: V1::UserSerializer.new(@user)
     else
@@ -25,6 +30,11 @@ class V1::UsersController < ApplicationController
     ActiveRecord::Base.transaction do
       @user.update(user_params.except(:password))
     end
+  end
+
+  def destroy
+    @user.destroy
+    head :no_content
   end
 
   private
