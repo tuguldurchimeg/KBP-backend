@@ -10,6 +10,6 @@ class V1::UserSerializer
   end
 
   attribute :issues, if: show_issue do |object|
-    Document::Issue.where(created_by: object.id)&.count
+    Document::Issue.where(created_by: object.id).where.not(status: Document::Issue.statuses[:closed])&.count
   end
 end
