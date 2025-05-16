@@ -38,7 +38,6 @@ Rails.application.routes.draw do
     namespace :tools do
       resources :tags
       resources :glossaries
-      resources :seos
     end
 
     post 'login', to: 'authentication#login'
