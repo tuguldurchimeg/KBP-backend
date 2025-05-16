@@ -20,7 +20,7 @@ class V1::IssueSerializer
   end
 
   attribute :assignees do |object|
-    issue_users = Base::User.where(id: object.issue_assignees.select(:id))
+    issue_users = Base::User.where(id: object.issue_assignees.pluck(:user_id))
     V1::UserSerializer.new(issue_users)
   end
 end
