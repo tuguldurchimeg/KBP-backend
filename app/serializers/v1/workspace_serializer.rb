@@ -10,7 +10,7 @@ class V1::WorkspaceSerializer
   end
 
   attribute :categories, if: show_detail do |object, params|
-    V1::CategorySerializer.new(object.categories, params: { show_detail: true, tag_ids: params[:tag_ids] } )
+    V1::CategorySerializer.new(object.categories.where(parent_id: nil), params: { show_detail: true, tag_ids: params[:tag_ids] } )
   end
 
   attribute :documents, if: show_detail do |object, params|

@@ -49,7 +49,7 @@ module KBPBackend
     config.action_mailer.delivery_method = :smtp
     config.action_mailer.perform_deliveries = true
     config.action_mailer.raise_delivery_errors = true
-    # config.action_mailer.default_url_options = { host: "https://#{ENV['WEB_HOST']}" }
+    config.action_mailer.default_url_options = { host: "#{ENV['WEB_HOST']}" }
     config.action_mailer.smtp_settings = {
       address: ENV['SMTP_ADDRESS'],
       port: 587,

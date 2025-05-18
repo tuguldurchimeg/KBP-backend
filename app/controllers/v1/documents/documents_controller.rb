@@ -4,7 +4,7 @@ class V1::Documents::DocumentsController < ApplicationController
 
   def index
     if params[:is_template].present? && params[:is_template]
-      @documents = Document::Document.where(is_template: true, workspace_id: params[:workspace_id])
+      @documents = Document::Document.where(is_template: true, workspace_id: params[:workspace_id]).order(created_at: :desc)
     else
       @documents = Document::Document.where(is_template: false, workspace_id: params[:workspace_id])
     end

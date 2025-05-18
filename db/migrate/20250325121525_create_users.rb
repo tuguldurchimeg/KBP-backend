@@ -11,6 +11,8 @@ class CreateUsers < ActiveRecord::Migration[7.0]
       t.string :password_digest, limit: 255
       t.integer :login_count, default: 0
       t.boolean :password_change_required, default: false
+      t.string :confirmation_code, limit: 6
+      t.datetime :confirmation_expires
       t.timestamps
     end
   end

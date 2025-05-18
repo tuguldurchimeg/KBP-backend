@@ -48,10 +48,9 @@ Rails.application.routes.draw do
     get 'app_init', to: 'main#app_init'
     get 'profile', to: 'authentication#show'
 
-    post 'passwords/forgot', to: 'authentication#forgot_password'
-    post 'passwords/confirm', to: 'authentication#confirm_reset'
-    post 'passwords/reset', to: 'authentication#save'
     post 'passwords/change', to: 'authentication#password_change'
+    post 'passwords/forgot', to: 'authentication#forgot_password'
+    post 'passwords/reset', to: 'authentication#reset'
     post 'passwords/resend_code', to: 'authentication#resend_code'
 
   end

@@ -14,14 +14,13 @@ class Base::User < ApplicationRecord
   validates :lastname, presence: true, length: { in: 1..50 }
   validates :email, length: { maximum: 100 }, uniqueness: { case_sensitive: false },
                     format: { with: /\A[\w+\-.]+@[a-z\d-]+(\.[a-z\d-]+)*\.[a-z]+\z/i }
-  validates :password, length: { minimum: 8 }, format: { with: /\A^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x21-\x7E]){8,}$\z/ },
-                       allow_blank: true
+  validates :password, length: { minimum: 8 }, format: { with: /\A^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x21-\x7E]){8,}$\z/ }
+  validates :confirmation_code, length: { is: 6 }, format: { with: /\A[a-zA-Z0-9]+\z/ }
 
   default_scope { left_joins(:company).where(company: { uid: Current.current_company }) }
 
   def password_code_valid?
     return false unless confirmation_expires.present?
-
     confirmation_expires > Time.now.utc
   end
 
@@ -44,10 +43,9 @@ class Base::User < ApplicationRecord
   end
 
   def self.confirmation_code_sent(params)
-    user = find_by_email(params[:email]&.downcase)
+    user = unscoped.find_by_email(params[:email]&.downcase)
     if user
-      user.update!(sign_in_failed: 0, locked_at: nil) if user.locked_at?
-      user.update!(confirmation_code: rand(1000..9999), confirmation_expires: Time.now.utc + 5.minutes)
+      user.update!(confirmation_code: SecureRandom.alphanumeric(6), confirmation_expires: Time.now.utc + 5.minutes)
       # UserMailer.reset_password(user).deliver_now!
     end
     user

@@ -32,48 +32,33 @@ class V1::AuthenticationController < ApplicationController
   end
 
   def forgot_password
-    user = Base::User.unscoped.confirmation_code_sent(params)
+    user = Base::User.confirmation_code_sent(params)
     if user
-      PasswordMailer.with(
-        user: user
-      ).send_confirmation_code.deliver_now
+      PasswordMailer.with(user: user).send_confirmation_code.deliver_now
       render json: { success: 'Success' }, status: :ok
     else
       render json: { error: 'Unregistered email address' }, status: :unprocessable_entity
     end
   end
 
-  def confirm_reset
-    user = Base::User.unscoped.find_by_email(params[:email]&.downcase)
-    return render json: { error: 'Unregistered email address' }, status: :unprocessable_entity unless user.present?
-
-    unless user.password_code_valid?
-      return render json: { error: 'Confirmation code expired' },
-                    status: :unprocessable_entity
-    end
-
-    if params[:confirmation_code].to_i.eql? user.confirmation_code
-      render json: { success: 'Confirmed' }, status: :ok
-    else
-      render json: { error: 'Confirmation code not match' }, status: :unprocessable_entity
-    end
-  end
-
-  def save
-    @user = Base::User.unscoped.find_by_email(params[:email].downcase)
+  def reset
+    @user = Base::User.unscoped.find_by_email(params[:email]&.downcase)
+    puts "userr: #{@user.inspect}"
     return render json: { error: 'Unregistered email address' }, status: :unauthorized unless @user.present?
     return render json: { error: 'Confirmation code expired' }, status: :unauthorized unless @user.password_code_valid?
-    unless params[:confirmation_code].to_i.eql? @user.confirmation_code
+    puts "checkk: #{params[:confirmation_code].eql? @user.confirmation_code}"
+    puts "params/confirm: #{params[:confirmation_code]}, user/confirm: #{@user.confirmation_code}"
+    unless params[:confirmation_code].eql? @user.confirmation_code
       return render json: { error: 'Confirmation code not match' }, status: :unauthorized
     end
 
-    if params[:password] == params[:password_confirm]
-      if @user.authenticate(params[:password])
+    if params[:new_password] == params[:confirm_new_password]
+      if @user.authenticate(params[:new_password])
         return render json: {code: 40044, message: I18n.t('errors.messages.used_before') }, status: :unauthorized
       end
 
       begin
-        @user.reset_password!(params[:password])
+        @user.reset_password!(params[:new_password])
         # UserMailer.reset_password_complete(@user).deliver_now!
         render json: { success: 'password has been reset successfully' }, status: :ok
       rescue ActiveRecord::RecordInvalid => e

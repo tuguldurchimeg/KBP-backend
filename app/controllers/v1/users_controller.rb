@@ -19,6 +19,7 @@ class V1::UsersController < ApplicationController
     company = Base::Company.find_by(uid: Current.current_company)
     @user.role = company.roles.first
     @user.company = company
+    PasswordMailer.with(user: user).send_new_password.deliver_later
 
     if @user.save
       render json: V1::UserSerializer.new(@user)
