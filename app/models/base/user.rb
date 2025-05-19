@@ -28,6 +28,7 @@ class Base::User < ApplicationRecord
     self.confirmation_code = nil
     self.confirmation_expires = nil
     self.password = password
+    self.password_change_required = false
     save!
   end
 

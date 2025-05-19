@@ -61,7 +61,6 @@ class V1::AuthenticationController < ApplicationController
 
       begin
         @user.reset_password!(reset_params[:new_password])
-        # UserMailer.reset_password_complete(@user).deliver_now!
         render json: { success: 'password has been reset successfully' }, status: :ok
       rescue ActiveRecord::RecordInvalid => e
         render json: { error: e.message }, status: :unprocessable_entity
