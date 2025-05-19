@@ -9,16 +9,14 @@ class Base::Workspace < ApplicationRecord
   has_many :seos, dependent: :destroy, class_name: 'Tool::Seo'
   has_many :workspace_role_details, class_name: 'Base::WorkspaceRoleDetail'
 
-  validates :name, presence: true, uniqueness: true
+  validates :name, presence: true, uniqueness: { scope: :company_id}
   validates :creator_id, presence: true
 
   default_scope { left_joins(:company).where(company: { uid: Current.current_company }) }
 
   def create_workspace_roles(current_user)
-    puts "workspace: #{self.inspect}"
     Base::WorkspaceRoleDetail.create!(user_id: current_user.id, workspace_id: self.id, action: :admin)
     users = Base::User.where.not(id: current_user.id)
-    puts 'Checkhere22'
 
     users.each do |user|
       workspace_role = Base::WorkspaceRoleDetail.find_or_initialize_by(user_id: user.id, workspace_id: self.id)
