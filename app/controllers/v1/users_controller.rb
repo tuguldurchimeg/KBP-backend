@@ -12,20 +12,8 @@ class V1::UsersController < ApplicationController
   end
 
   def create
-    @user = Base::User.new(user_params)
-    @user.uid = SecureRandom.uuid
-    default_password = ENV['DEFAULT_USER_PASSWORD']
-    @user.password = default_password
-    company = Base::Company.find_by(uid: Current.current_company)
-    @user.role = company.roles.first
-    @user.company = company
-    PasswordMailer.with(user: user).send_new_password.deliver_later
-
-    if @user.save
-      render json: V1::UserSerializer.new(@user)
-    else
-      render json: @user.errors, status: :unprocessable_entity
-    end
+    @user = Base::User.new_user(user_params)
+    render json: V1::UserSerializer.new(@user)
   end
 
   def update

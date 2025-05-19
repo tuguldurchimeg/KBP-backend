@@ -31,3 +31,27 @@
 
 en:
   hello: "Hello world"
+  confirm_mismatch: AE100034
+  incorrect: AE100035
+  mailer:
+    send_new_password:
+      subject: New password
+    send_confirmation_code:
+      subject: Confirmation code
+  errors:
+    format: "%{attribute} %{message}"
+    messages:
+      blank: ABE000001
+      present: ABE000002
+      required: ABE000003
+      invalid: ABE000004
+      too_long: ABE000005
+      too_short: ABE000006
+      not_a_number: ABE000007
+      must_be_integer: ABE000008
+      must_be_string: ABE000009
+      must_be_date: ABE000010
+      must_be_json: ABE000011
+      inclusion: ABE000012
+      in: ABE000013
+      used_before: ABE100014

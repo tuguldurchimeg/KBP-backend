@@ -45,12 +45,45 @@ class Base::User < ApplicationRecord
   def self.confirmation_code_sent(params)
     user = unscoped.find_by_email(params[:email]&.downcase)
     if user
-      puts "userconfirm: #{user.inspect}"
       user.update!(confirmation_code: SecureRandom.alphanumeric(6), confirmation_expires: Time.now.utc + 5.minutes)
-      puts "userconfirm after: #{user.inspect}"
-      # UserMailer.reset_password(user).deliver_now!
     end
     user
+  end
+
+  def self.new_user(params)
+    user = Base::User.new(params)
+    ActiveRecord::Base.transaction do
+      company = Base::Company.find_by(uid: Current.current_company)
+
+      user.uid = SecureRandom.uuid
+      user.role = company.roles.first
+      user.company = company
+      user.password = generate_password
+      user.password_change_required = true
+      user.save!
+      PasswordMailer.with(user: user).send_password.deliver_now
+    end
+    user
+  end
+
+  def self.generate_password(length = 8)
+    # At least 1 digit, 1 lowercase, 1 uppercase, 1 symbol
+    chars = {
+      lower: ('a'..'z').to_a,
+      upper: ('A'..'Z').to_a,
+      digits: ('0'..'9').to_a,
+      symbols: %w[! @ # $ % ^ & * - _ = +]
+    }
+
+    base = [
+      chars[:lower].sample,
+      chars[:upper].sample,
+      chars[:digits].sample,
+      chars[:symbols].sample
+    ]
+
+    remaining = (chars[:lower] + chars[:upper] + chars[:digits] + chars[:symbols]).sample(length - 4)
+    (base + remaining).shuffle.join
   end
 
   def has_permission?(action, resource)
