@@ -5,5 +5,5 @@ class Base::Role < ApplicationRecord
 
   validates :name, presence: true
 
-  default_scope { left_joins(:company).where(company: { uid: Current.current_company }) }
+  # default_scope { left_joins(:company).where(company: { uid: Current.current_company }) }
 end

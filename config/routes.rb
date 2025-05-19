@@ -50,6 +50,7 @@ Rails.application.routes.draw do
 
     post 'passwords/change', to: 'authentication#password_change'
     post 'passwords/forgot', to: 'authentication#forgot_password'
+    post 'passwords/confirm', to: 'authentication#confirm_code'
     post 'passwords/reset', to: 'authentication#reset'
     post 'passwords/resend_code', to: 'authentication#resend_code'
 

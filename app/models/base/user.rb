@@ -14,8 +14,8 @@ class Base::User < ApplicationRecord
   validates :lastname, presence: true, length: { in: 1..50 }
   validates :email, length: { maximum: 100 }, uniqueness: { case_sensitive: false },
                     format: { with: /\A[\w+\-.]+@[a-z\d-]+(\.[a-z\d-]+)*\.[a-z]+\z/i }
-  validates :password, length: { minimum: 8 }, format: { with: /\A^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x21-\x7E]){8,}$\z/ }
-  validates :confirmation_code, length: { is: 6 }, format: { with: /\A[a-zA-Z0-9]+\z/ }
+  validates :password, length: { minimum: 8 }, format: { with: /\A^(?=.*\d)(?=.*([a-z]|[A-Z]))([\x21-\x7E]){8,}$\z/ }, allow_blank: true
+  validates :confirmation_code, length: { maximum: 6 }, format: { with: /\A[a-zA-Z0-9]+\z/ }, allow_blank: true
 
   default_scope { left_joins(:company).where(company: { uid: Current.current_company }) }
 
@@ -45,7 +45,9 @@ class Base::User < ApplicationRecord
   def self.confirmation_code_sent(params)
     user = unscoped.find_by_email(params[:email]&.downcase)
     if user
+      puts "userconfirm: #{user.inspect}"
       user.update!(confirmation_code: SecureRandom.alphanumeric(6), confirmation_expires: Time.now.utc + 5.minutes)
+      puts "userconfirm after: #{user.inspect}"
       # UserMailer.reset_password(user).deliver_now!
     end
     user
