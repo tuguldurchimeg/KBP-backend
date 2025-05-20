@@ -1,5 +1,6 @@
 require_relative 'boot'
 
+require 'logger'
 require 'rails/all'
 # Pick the frameworks you want:
 require 'active_model/railtie'
@@ -12,7 +13,6 @@ require 'action_mailbox/engine'
 require 'action_text/engine'
 require 'action_view/railtie'
 require 'action_cable/engine'
-require 'logger'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
