@@ -454,6 +454,7 @@ DEPENDENCIES
   httparty
   jwt
   kaminari
+  logger
   omniauth-google-oauth2
   omniauth-rails_csrf_protection (~> 1.0)
   overcommit

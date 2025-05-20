@@ -12,6 +12,7 @@ gem 'geokit-rails'
 gem 'httparty'
 gem 'jwt'
 gem 'kaminari'
+gem 'logger'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-rails_csrf_protection', '~> 1.0'
 gem 'pg', '~> 1.1'
@@ -38,4 +39,4 @@ group :development, :test do
   gem 'rubocop', require: false
 end
 
-gem "dockerfile-rails", ">= 1.7", :group => :development
+gem 'dockerfile-rails', '>= 1.7', :group => :development
