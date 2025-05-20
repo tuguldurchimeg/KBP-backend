@@ -37,3 +37,5 @@ group :development, :test do
   gem 'rswag-specs'
   gem 'rubocop', require: false
 end
+
+gem "dockerfile-rails", ">= 1.7", :group => :development
