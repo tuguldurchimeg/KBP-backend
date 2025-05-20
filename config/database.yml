@@ -9,12 +9,12 @@ default: &default
 
 development:
   <<: *default
-  database: kbp_dev
+  database: ENV["DATABASE_DEV"]
 
 test:
   <<: *default
-  database: kbp_test
+  database: ENV["DATABASE_TEST"]
 
 production:
   <<: *default
-  database: kbp_production
+  database: ENV["DATABASE_PROD"]
