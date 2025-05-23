@@ -4,7 +4,7 @@ class Tool::Seo < ApplicationRecord
 
   validates :title, presence: true, length: { maximum: 255 }
   validates :content, length: { maximum: 1000 }
-  validates :document_id
+  validates :document_id, presence: true
 
   scope :recent, -> { order(created_at: :desc) }
 end
